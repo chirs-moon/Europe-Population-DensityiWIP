@@ -65,17 +65,28 @@ app.title = "EU Population Density Dashboard"
 years = df_pivot.index.astype(int).tolist()
 
 app.layout = html.Div([
-    html.H2("Population Density Change in the EU"),
-    html.Div([
-        html.Label("Start Year:"),
-        dcc.Dropdown(id='start-year', options=[{'label': y, 'value': str(y)} for y in years],
-                     value=str(min(years)), clearable=False),
-        html.Label("End Year:"),
-        dcc.Dropdown(id='end-year', options=[{'label': y, 'value': str(y)} for y in years],
-                     value=str(max(years)), clearable=False)
-    ], style={'width': '300px', 'marginBottom': '20px'}),
+    html.H2("Population Density Change in the EU", style={'textAlign': 'center'}),
 
-    dcc.Graph(id='choropleth-map')
+    html.Div([
+        html.Div([
+            html.Label("Start Year:"),
+            dcc.Dropdown(id='start-year', options=[{'label': y, 'value': str(y)} for y in years],
+                         value=str(min(years)), clearable=False, style={'width': '150px'})
+        ], style={'marginRight': '20px'}),
+
+        html.Div([
+            html.Label("End Year:"),
+            dcc.Dropdown(id='end-year', options=[{'label': y, 'value': str(y)} for y in years],
+                         value=str(max(years)), clearable=False, style={'width': '150px'})
+        ])
+    ], style={
+        'display': 'flex',
+        'justifyContent': 'center',
+        'alignItems': 'center',
+        'marginBottom': '20px'
+    }),
+
+    dcc.Graph(id='choropleth-map', style={'height': '700px'})  # Adjusted size
 ])
 
 @app.callback(
@@ -121,7 +132,10 @@ def update_map(start_year, end_year):
 
     fig.update_layout(
         geo=dict(scope='europe', projection_scale=1, center={"lat": 55, "lon": 15}),
-        coloraxis_colorbar=dict(title="% Change"),
+        coloraxis_colorbar=dict(
+            title="% Change",
+            x=0.85  # Shift legend closer to the map
+        ),
         margin={"r": 0, "l": 0, "t": 50, "b": 0},
         title_x=0.5
     )
